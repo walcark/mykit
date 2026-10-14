@@ -5,6 +5,9 @@ name = "mykit"
 requires-python = ">= 3.11"
 version = "0.1.0"
 
+[project.optional-dependencies]
+data = ["pandas>=3.0.6,<4"]
+
 [build-system]
 build-backend = "hatchling.build"
 requires = ["hatchling"]
@@ -17,3 +20,35 @@ platforms = ["linux-64"]
 mykit = { path = ".", editable = true }
 
 [tool.pixi.tasks]
+fmt = "ruff format src tests"
+lint = "ruff check src tests"
+check = "mypy src"
+test = "pytest -q"
+all = { depends-on = ["fmt", "lint", "check", "test"] }
+
+[tool.pixi.environments]
+dev = ["dev"]
+
+[tool.pixi.dependencies]
+python = "3.12.*"
+
+[tool.pixi.feature.dev.dependencies]
+pytest = ">=8.3"
+pytest-cov = ">=6.0"
+ruff = ">=0.11"
+pre-commit = ">=4.2"
+mypy = ">=1.5"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [ "E", "F", "I", "UP", "B" ]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest]
+testpaths = [ "tests" ]
+
