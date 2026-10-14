@@ -11,9 +11,9 @@ __all__ = sorted(_DOMAINS)
 
 
 def __getattr__(name: str) -> _ModuleType:
-    """Allow to load a module on import only.
+    """Allow to load a module on first-access.
 
-    The classic approch is to define modules in __init__.py. For instance:
+    The classic approach is to define modules in __init__.py. For instance:
 
         from . import log
 
@@ -29,17 +29,15 @@ def __getattr__(name: str) -> _ModuleType:
     Returns
     -------
     ModuleType
-        The module to import, if existant.
+        The module to import, if it exists.
 
     Raises
     ------
     AttributeError
-        If the module in not present in `_DOMAINS`.
+        If the module is not present in `_DOMAINS`.
     """
     if name not in _DOMAINS:
-        raise AttributeError(
-            f"Module {name} not known. Existing modules are {_DOMAINS}"
-        )
+        raise AttributeError(f"module 'mykit' has not attribute {name}")
     return _importlib.import_module("." + name, __name__)
 
 
