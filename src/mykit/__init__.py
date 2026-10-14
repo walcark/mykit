@@ -1,10 +1,14 @@
 """MyKit - simplify scientific research workflows."""
 
 import importlib as _importlib
+from importlib.metadata import PackageNotFoundError as _PackageNotFoundError
 from importlib.metadata import version as _version
 from types import ModuleType as _ModuleType
 
-__version__ = _version("mykit")
+try:
+    __version__ = _version("mykit")
+except _PackageNotFoundError:  # if running from sources rather than installed
+    __version__ = "0+unknown"
 
 _DOMAINS = frozenset({"log"})
 __all__ = sorted(_DOMAINS)
@@ -37,7 +41,7 @@ def __getattr__(name: str) -> _ModuleType:
         If the module is not present in `_DOMAINS`.
     """
     if name not in _DOMAINS:
-        raise AttributeError(f"module 'mykit' has not attribute {name}")
+        raise AttributeError(f"module 'mykit' has no attribute {name!r}")
     return _importlib.import_module("." + name, __name__)
 
 
