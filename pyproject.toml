@@ -27,7 +27,8 @@ test = "pytest -q"
 all = { depends-on = ["fmt", "lint", "check", "test"] }
 
 [tool.pixi.environments]
-dev = ["dev"]
+default = ["data"]
+dev = ["data", "dev"]
 
 [tool.pixi.dependencies]
 python = "3.12.*"
