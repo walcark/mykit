@@ -1,16 +1,16 @@
 """MyKit - simplify scientific research workflows."""
 
-import importlib
-from importlib.metadata import version
-from types import ModuleType
+import importlib as _importlib
+from importlib.metadata import version as _version
+from types import ModuleType as _ModuleType
 
-__version__ = version("mykit")
+__version__ = _version("mykit")
 
-__all__ = []
-lazy_modules = ["log"]
+_DOMAINS = frozenset({"log"})
+__all__ = sorted(_DOMAINS)
 
 
-def __getattr__(name: str) -> ModuleType:
+def __getattr__(name: str) -> _ModuleType:
     """Allow to load a module on import only.
 
     The classic approch is to define modules in __init__.py. For instance:
@@ -34,13 +34,13 @@ def __getattr__(name: str) -> ModuleType:
     Raises
     ------
     AttributeError
-        If the module in not present in `lazy_modules`.
+        If the module in not present in `_DOMAINS`.
     """
-    if name not in lazy_modules:
+    if name not in _DOMAINS:
         raise AttributeError(
-            f"Module {name} not known. Existing modules are {lazy_modules}"
+            f"Module {name} not known. Existing modules are {_DOMAINS}"
         )
-    return importlib.import_module("." + name, __name__)
+    return _importlib.import_module("." + name, __name__)
 
 
 def __dir__() -> list[str]:
@@ -55,4 +55,4 @@ def __dir__() -> list[str]:
         The list of modules, lazy or not.
     """
 
-    return sorted(__all__ + lazy_modules)
+    return sorted(set(globals()) | _DOMAINS)
